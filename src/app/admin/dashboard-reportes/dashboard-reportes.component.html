@@ -1,0 +1,158 @@
+<section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <app-breadcrumb
+        [title]="'Dashboard'"
+        [items]="['Gerencial']"
+        [active_item]="'Resumen'"
+      ></app-breadcrumb>
+    </div>
+
+    @if (resumen; as r) {
+      <div class="row">
+        <div class="col-lg-3 col-md-6">
+          <div class="modern-card body">
+            <div class="text-muted">Ventas de hoy</div>
+            <h3>&#36;{{ r.ventasHoy.total.toFixed(2) }}</h3>
+            <div>{{ r.ventasHoy.cantidad }} venta(s)</div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="modern-card body">
+            <div class="text-muted">Caja</div>
+            <h3>{{ r.cajaAbierta ? 'Abierta' : 'Cerrada' }}</h3>
+            @if (r.cajaAbierta) {
+              <div>Inicial: &#36;{{ r.montoInicialCaja?.toFixed(2) }}</div>
+            }
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="modern-card body">
+            <div class="text-muted">Stock bajo</div>
+            <h3>{{ r.stockBajoCount }}</h3>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="modern-card body">
+            <div class="text-muted">Transferencias pendientes</div>
+            <h3>{{ r.transferenciasPendientes }}</h3>
+          </div>
+        </div>
+      </div>
+    }
+
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="modern-card body">
+          <div class="row">
+            <div class="col-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Desde</mat-label>
+                <input matInput type="date" [(ngModel)]="desde" />
+              </mat-form-field>
+            </div>
+            <div class="col-4">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Hasta</mat-label>
+                <input matInput type="date" [(ngModel)]="hasta" />
+              </mat-form-field>
+            </div>
+            <div class="col-4 d-flex align-items-center">
+              <button mat-flat-button color="primary" (click)="onBuscar()">Buscar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-7">
+        <div class="modern-card body">
+          <h5>Reporte de ventas</h5>
+          @if (reporteVentas; as rv) {
+            <table class="table">
+              <thead>
+                <tr><th>Número</th><th>Fecha</th><th>Vendedor</th><th>Total</th></tr>
+              </thead>
+              <tbody>
+                @for (v of rv.ventas; track v.id) {
+                  <tr>
+                    <td>{{ v.numero }}</td>
+                    <td>{{ v.fecha | date: 'short' }}</td>
+                    <td>{{ v.vendedor }}</td>
+                    <td>&#36;{{ v.total.toFixed(2) }}</td>
+                  </tr>
+                } @empty {
+                  <tr><td colspan="4" class="text-muted">Sin ventas en el período.</td></tr>
+                }
+              </tbody>
+            </table>
+            <div class="d-flex justify-content-between">
+              <strong>Total ({{ rv.totales.cantidad }} ventas)</strong>
+              <strong>&#36;{{ rv.totales.total.toFixed(2) }}</strong>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="modern-card body">
+          <h5>Productos más vendidos</h5>
+          <table class="table">
+            <thead><tr><th>Producto</th><th>Cant.</th><th>Total</th></tr></thead>
+            <tbody>
+              @for (p of productosMasVendidos; track p.producto?.id) {
+                <tr>
+                  <td>{{ p.producto?.nombre ?? '—' }}</td>
+                  <td>{{ p.cantidadVendida }}</td>
+                  <td>&#36;{{ p.totalVendido.toFixed(2) }}</td>
+                </tr>
+              } @empty {
+                <tr><td colspan="3" class="text-muted">Sin datos en el período.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    @if (esAdmin) {
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="modern-card body">
+          <h5>Consolidado por sucursal</h5>
+          @if (consolidado; as c) {
+            <table class="table">
+              <thead>
+                <tr><th>Sucursal</th><th>Ventas</th><th>Subtotal</th><th>IVA</th><th>Total</th></tr>
+              </thead>
+              <tbody>
+                @for (s of c.porSucursal; track s.sucursalId) {
+                  <tr>
+                    <td>{{ s.sucursalNombre }}</td>
+                    <td>{{ s.cantidadVentas }}</td>
+                    <td>&#36;{{ s.subtotal.toFixed(2) }}</td>
+                    <td>&#36;{{ s.iva.toFixed(2) }}</td>
+                    <td>&#36;{{ s.total.toFixed(2) }}</td>
+                  </tr>
+                } @empty {
+                  <tr><td colspan="5" class="text-muted">Sin datos en el período.</td></tr>
+                }
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td><strong>Total general</strong></td>
+                  <td><strong>{{ c.totalGeneral.cantidadVentas }}</strong></td>
+                  <td><strong>&#36;{{ c.totalGeneral.subtotal.toFixed(2) }}</strong></td>
+                  <td><strong>&#36;{{ c.totalGeneral.iva.toFixed(2) }}</strong></td>
+                  <td><strong>&#36;{{ c.totalGeneral.total.toFixed(2) }}</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</section>

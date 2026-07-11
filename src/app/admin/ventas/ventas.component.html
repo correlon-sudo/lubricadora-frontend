@@ -1,0 +1,266 @@
+<section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <app-breadcrumb
+        [title]="'Punto de Venta'"
+        [items]="['Ventas']"
+        [active_item]="'Nueva venta'"
+      ></app-breadcrumb>
+    </div>
+
+    <div class="row">
+      <!-- Columna izquierda: búsqueda + carrito -->
+      <div class="col-lg-8">
+        <div class="modern-card body">
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Buscar producto o servicio (nombre o código)</mat-label>
+            <input
+              matInput
+              [ngModel]="busqueda()"
+              (ngModelChange)="busqueda.set($event)"
+            />
+          </mat-form-field>
+
+          @if (resultadosBusqueda().length > 0) {
+            <div class="list-group mb-3">
+              @for (r of resultadosBusqueda(); track r.tipoItem + r.id) {
+                <button
+                  type="button"
+                  class="list-group-item list-group-item-action d-flex justify-content-between"
+                  (click)="agregarAlCarrito(r)"
+                >
+                  <span>{{ r.codigo }} — {{ r.nombre }}</span>
+                  <strong>&#36;{{ r.precio.toFixed(2) }}</strong>
+                </button>
+              }
+            </div>
+          }
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Descripción</th>
+                <th style="width:90px">Cant.</th>
+                <th style="width:110px">P. unitario</th>
+                <th style="width:100px">Desc.</th>
+                <th style="width:100px">Subtotal</th>
+                <th style="width:50px"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (linea of cart(); track $index) {
+                <tr>
+                  <td>{{ linea.descripcion }}</td>
+                  <td>
+                    <input
+                      type="number"
+                      min="1"
+                      class="form-control form-control-sm"
+                      [ngModel]="linea.cantidad"
+                      (ngModelChange)="actualizarCantidad($index, +$event)"
+                    />
+                  </td>
+                  <td>&#36;{{ linea.precioUnitario.toFixed(2) }}</td>
+                  <td>
+                    <input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      class="form-control form-control-sm"
+                      [ngModel]="linea.descuento"
+                      (ngModelChange)="actualizarDescuento($index, +$event)"
+                    />
+                  </td>
+                  <td>
+                    &#36;{{ (linea.precioUnitario * linea.cantidad - linea.descuento).toFixed(2) }}
+                  </td>
+                  <td>
+                    <button mat-icon-button type="button" (click)="quitarLinea($index)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="6" class="text-center text-muted">
+                    Carrito vacío — buscá un producto o servicio arriba.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Columna derecha: cliente, comprobante, totales, pagos -->
+      <div class="col-lg-4">
+        <div class="modern-card body">
+          <div class="btn-group w-100 mb-3" role="group">
+            <button
+              type="button"
+              class="btn"
+              [class.btn-primary]="modo() === 'VENTA'"
+              [class.btn-outline-primary]="modo() !== 'VENTA'"
+              (click)="modo.set('VENTA')"
+            >
+              Venta
+            </button>
+            <button
+              type="button"
+              class="btn"
+              [class.btn-primary]="modo() === 'COTIZACION'"
+              [class.btn-outline-primary]="modo() !== 'COTIZACION'"
+              (click)="modo.set('COTIZACION')"
+            >
+              Cotización
+            </button>
+          </div>
+
+          <mat-form-field class="w-100" appearance="outline">
+            <mat-label>Cliente</mat-label>
+            <mat-select
+              [ngModel]="clienteId()"
+              (ngModelChange)="onClienteChange($event)"
+            >
+              @for (c of clientes(); track c.id) {
+                <mat-option [value]="c.id">
+                  {{ c.nombres }} {{ c.apellidos }}
+                  @if (c.esConsumidorFinal) {
+                    (Consumidor Final)
+                  }
+                </mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          @if (vehiculosDelCliente().length > 0) {
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>Vehículo (opcional)</mat-label>
+              <mat-select [ngModel]="vehiculoId()" (ngModelChange)="vehiculoId.set($event)">
+                @for (v of vehiculosDelCliente(); track v.id) {
+                  <mat-option [value]="v.id">{{ v.placa }} — {{ v.marca }} {{ v.modelo }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
+
+          @if (modo() === 'VENTA') {
+            <mat-form-field class="w-100" appearance="outline">
+              <mat-label>Tipo de comprobante</mat-label>
+              <mat-select
+                [ngModel]="tipoComprobante()"
+                (ngModelChange)="tipoComprobante.set($event)"
+              >
+                @for (t of tiposComprobante; track t) {
+                  <mat-option [value]="t">{{ t }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+          }
+
+          <hr />
+
+          <div class="d-flex justify-content-between">
+            <span>Subtotal</span>
+            <span>&#36;{{ totales().subtotal.toFixed(2) }}</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span>Descuento</span>
+            <span>&#36;{{ totales().descuentoTotal.toFixed(2) }}</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span>IVA</span>
+            <span>&#36;{{ totales().iva.toFixed(2) }}</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <strong>Total</strong>
+            <strong>&#36;{{ totales().total.toFixed(2) }}</strong>
+          </div>
+
+          @if (modo() === 'VENTA') {
+            <hr />
+
+            <h5>Pagos</h5>
+            @for (pago of pagos(); track $index) {
+              <div class="row mb-2">
+                <div class="col-5">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Forma</mat-label>
+                    <mat-select
+                      [ngModel]="pago.formaPago"
+                      (ngModelChange)="actualizarPago($index, 'formaPago', $event)"
+                    >
+                      @for (f of formasPago; track f) {
+                        <mat-option [value]="f">{{ f }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div class="col-5">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Monto</mat-label>
+                    <input
+                      matInput
+                      type="number"
+                      step="0.01"
+                      [ngModel]="pago.monto"
+                      (ngModelChange)="actualizarPago($index, 'monto', +$event)"
+                    />
+                  </mat-form-field>
+                </div>
+                <div class="col-2 d-flex align-items-center">
+                  @if (pagos().length > 1) {
+                    <button mat-icon-button type="button" (click)="quitarPago($index)">
+                      <mat-icon>close</mat-icon>
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+            <button mat-stroked-button type="button" (click)="agregarPago()">
+              + Agregar pago
+            </button>
+
+            <div class="mt-2" [class.text-danger]="!pagosCuadran()">
+              Pagado: &#36;{{ sumaPagos().toFixed(2) }}
+              @if (!pagosCuadran()) {
+                (no coincide con el total)
+              }
+            </div>
+          }
+
+          <button
+            mat-flat-button
+            color="primary"
+            class="w-100 mt-3"
+            [disabled]="isSubmitting || cart().length === 0"
+            (click)="confirmar()"
+          >
+            {{ modo() === 'VENTA' ? 'Confirmar venta' : 'Guardar cotización' }}
+          </button>
+
+          @if (ultimaVentaId && modo() === 'VENTA') {
+            <button
+              mat-stroked-button
+              class="w-100 mt-2"
+              type="button"
+              (click)="verPdf(ultimaVentaId)"
+            >
+              Ver PDF de la última venta
+            </button>
+          }
+          @if (ultimaCotizacionId && modo() === 'COTIZACION') {
+            <button
+              mat-stroked-button
+              class="w-100 mt-2"
+              type="button"
+              (click)="verPdfCotizacion(ultimaCotizacionId)"
+            >
+              Ver PDF de la última cotización
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

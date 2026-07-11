@@ -1,0 +1,12 @@
+// Header Search Trigger Layout
+.search-bar-list-item {
+  display: flex;
+  align-items: center;
+}
+
+// Mobile responsive adjustments
+@media (max-width: 767px) {
+  .options-container {
+    padding-left: 0 !important;
+  }
+}

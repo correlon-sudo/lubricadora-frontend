@@ -1,0 +1,567 @@
+{
+  "routes": [
+    {
+      "path": "",
+      "title": "MENUITEMS.MAIN.TEXT",
+      "iconType": "",
+      "icon": "",
+      "class": "",
+      "groupTitle": true,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN"],
+      "submenu": []
+    },
+
+    {
+      "path": "",
+      "title": "MENUITEMS.DASHBOARD.TEXT",
+      "iconType": "material-icons-outlined",
+      "icon": "space_dashboard",
+      "class": "menu-toggle",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN"],
+      "submenu": [
+        {
+          "path": "/admin/dashboard/main",
+          "title": "MENUITEMS.DASHBOARD.LIST.DASHBOARD1",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/dashboard/dashboard2",
+          "title": "MENUITEMS.DASHBOARD.LIST.DASHBOARD2",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/dashboard/teacher-dashboard",
+          "title": "MENUITEMS.DASHBOARD.LIST.TEACHER-DASHBOARD",
+          "iconType": "material-icons-outlined",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/dashboard/student-dashboard",
+          "title": "MENUITEMS.DASHBOARD.LIST.STUDENT-DASHBOARD",
+          "iconType": "material-icons-outlined",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/dashboard/library-dashboard",
+          "title": "MENUITEMS.DASHBOARD.LIST.LIBRARY-DASHBOARD",
+          "iconType": "material-icons-outlined",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/dashboard/transport-dashboard",
+          "title": "MENUITEMS.DASHBOARD.LIST.TRANSPORT-DASHBOARD",
+          "iconType": "material-icons-outlined",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        }
+      ]
+    },
+    {
+      "path": "",
+      "title": "Administración",
+      "iconType": "material-icons-outlined",
+      "icon": "admin_panel_settings",
+      "class": "menu-toggle",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN"],
+      "submenu": [
+        {
+          "path": "/admin/usuarios",
+          "title": "Usuarios",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/sucursales",
+          "title": "Sucursales",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/configuracion",
+          "title": "Configuración",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/auditoria",
+          "title": "Auditoría",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        }
+      ]
+    },
+    {
+      "path": "/admin/inventario/productos",
+      "title": "Productos",
+      "iconType": "material-icons-outlined",
+      "icon": "inventory",
+      "class": "",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN", "ENCARGADO", "VENDEDOR"],
+      "submenu": []
+    },
+    {
+      "path": "",
+      "title": "Inventario",
+      "iconType": "material-icons-outlined",
+      "icon": "inventory_2",
+      "class": "menu-toggle",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN", "ENCARGADO"],
+      "submenu": [
+        {
+          "path": "/admin/inventario/categorias",
+          "title": "Categorías",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/inventario/marcas",
+          "title": "Marcas",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/inventario/movimientos",
+          "title": "Kardex",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/inventario/transferencias",
+          "title": "Transferencias",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        }
+      ]
+    },
+    {
+      "path": "",
+      "title": "Clientes",
+      "iconType": "material-icons-outlined",
+      "icon": "groups",
+      "class": "menu-toggle",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN", "ENCARGADO", "VENDEDOR"],
+      "submenu": [
+        {
+          "path": "/admin/clientes",
+          "title": "Clientes",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/vehiculos",
+          "title": "Vehículos",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        }
+      ]
+    },
+    {
+      "path": "",
+      "title": "Ventas",
+      "iconType": "material-icons-outlined",
+      "icon": "point_of_sale",
+      "class": "menu-toggle",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN", "ENCARGADO", "VENDEDOR"],
+      "submenu": [
+        {
+          "path": "/admin/ventas",
+          "title": "Punto de Venta",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/admin/ventas/cotizaciones",
+          "title": "Cotizaciones",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        }
+      ]
+    },
+    {
+      "path": "/admin/ventas/historial",
+      "title": "Historial de Ventas",
+      "iconType": "material-icons-outlined",
+      "icon": "receipt_long",
+      "class": "",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN", "ENCARGADO"],
+      "submenu": []
+    },
+    {
+      "path": "/admin/ventas/servicios",
+      "title": "Servicios",
+      "iconType": "material-icons-outlined",
+      "icon": "design_services",
+      "class": "",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN", "ENCARGADO"],
+      "submenu": []
+    },
+    {
+      "path": "/admin/caja",
+      "title": "Caja",
+      "iconType": "material-icons-outlined",
+      "icon": "point_of_sale",
+      "class": "",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN", "ENCARGADO", "VENDEDOR"],
+      "submenu": []
+    },
+    {
+      "path": "/admin/colaboradores",
+      "title": "Colaboradores",
+      "iconType": "material-icons-outlined",
+      "icon": "badge",
+      "class": "",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN", "ENCARGADO"],
+      "submenu": []
+    },
+    {
+      "path": "/admin/reportes",
+      "title": "Dashboard Gerencial",
+      "iconType": "material-icons-outlined",
+      "icon": "insights",
+      "class": "",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN", "ENCARGADO"],
+      "submenu": []
+    },
+    {
+      "path": "",
+      "title": "Authentication",
+      "iconType": "material-icons-outlined",
+      "icon": "supervised_user_circle",
+      "class": "menu-toggle",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN"],
+      "submenu": [
+        {
+          "path": "/authentication/signin",
+          "title": "Sign In",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/authentication/signup",
+          "title": "Sign Up",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/authentication/forgot-password",
+          "title": "Forgot Password",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/authentication/locked",
+          "title": "Locked",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/authentication/page404",
+          "title": "404 - Not Found",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/authentication/page500",
+          "title": "500 - Server Error",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        }
+      ]
+    },
+    {
+      "path": "",
+      "title": "Extra Pages",
+      "iconType": "material-icons-outlined",
+      "icon": "description",
+      "class": "menu-toggle",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN"],
+      "submenu": [
+        {
+          "path": "/extra-pages/blank",
+          "title": "Blank Page",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        }
+      ]
+    },
+    {
+      "path": "",
+      "title": "Multi level Menu",
+      "iconType": "material-icons-outlined",
+      "icon": "slideshow",
+      "class": "menu-toggle",
+      "groupTitle": false,
+      "badge": "",
+      "badgeClass": "",
+      "role": ["ADMIN"],
+      "submenu": [
+        {
+          "path": "/multilevel/first1",
+          "title": "First",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        },
+        {
+          "path": "/",
+          "title": "Second",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-sub-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": [
+            {
+              "path": "/multilevel/secondlevel/second1",
+              "title": "Second 1",
+              "iconType": "",
+              "icon": "",
+              "class": "ml-menu2",
+              "groupTitle": false,
+              "badge": "",
+              "badgeClass": "",
+              "role": [""],
+              "submenu": []
+            },
+            {
+              "path": "/",
+              "title": "Second 2",
+              "iconType": "",
+              "icon": "",
+              "class": "ml-sub-menu2",
+              "groupTitle": false,
+              "badge": "",
+              "badgeClass": "",
+              "role": [""],
+              "submenu": [
+                {
+                  "path": "/multilevel/thirdlevel/third1",
+                  "title": "third 1",
+                  "iconType": "",
+                  "icon": "",
+                  "class": "ml-menu3",
+                  "groupTitle": false,
+                  "badge": "",
+                  "badgeClass": "",
+                  "role": [""],
+                  "submenu": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "path": "/multilevel/first3",
+          "title": "Third",
+          "iconType": "",
+          "icon": "",
+          "class": "ml-menu",
+          "groupTitle": false,
+          "badge": "",
+          "badgeClass": "",
+          "role": [""],
+          "submenu": []
+        }
+      ]
+    }
+  ]
+}
