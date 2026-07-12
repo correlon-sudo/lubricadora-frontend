@@ -27,42 +27,6 @@ export const APP_ROUTE: Route[] = [
         loadChildren: () =>
           import('./admin/admin.routes').then((m) => m.ADMIN_ROUTE),
       },
-      {
-        // ENCARGADO de sucursal — carpeta física "teacher" heredada del
-        // template, se repropone como área del encargado en fases 2+.
-        path: 'teacher',
-        canActivate: [AuthGuard],
-        data: {
-          role: Role.Encargado,
-        },
-        loadChildren: () =>
-          import('./teacher/teacher.routes').then((m) => m.TEACHER_ROUTE),
-      },
-      {
-        // VENDEDOR — carpeta física "student" heredada del template, se
-        // repropone como área del vendedor (POS) en fases 2+.
-        path: 'student',
-        canActivate: [AuthGuard],
-        data: {
-          role: Role.Vendedor,
-        },
-        loadChildren: () =>
-          import('./student/student.routes').then((m) => m.STUDENT_ROUTE),
-      },
-      {
-        path: 'extra-pages',
-        loadChildren: () =>
-          import('./extra-pages/extra-pages.routes').then(
-            (m) => m.EXTRA_PAGES_ROUTE,
-          ),
-      },
-      {
-        path: 'multilevel',
-        loadChildren: () =>
-          import('./multilevel/multilevel.routes').then(
-            (m) => m.MULTILEVEL_ROUTE,
-          ),
-      },
     ],
   },
   {
