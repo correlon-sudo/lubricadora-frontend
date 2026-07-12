@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { Router, ActivatedRoute, RouterLink } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService, Role } from '@core';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
@@ -14,7 +14,6 @@ import { LocalStorageService } from '@shared/services';
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.scss'],
   imports: [
-    RouterLink,
     MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
@@ -40,63 +39,15 @@ export class SigninComponent
   error = '';
   hide = true;
   rememberMe = false;
-  selectedRole = 'admin';
-  showDeviceVerification = false;
 
   ngOnInit() {
     this.authForm = this.formBuilder.group({
-      username: ['admin', Validators.required],
-      password: ['admin@123', Validators.required],
+      username: ['', Validators.required],
+      password: ['', Validators.required],
     });
   }
   get f() {
     return this.authForm.controls;
-  }
-  adminSet() {
-    this.selectedRole = 'admin';
-    this.authForm.get('username')?.setValue('admin');
-    this.authForm.get('password')?.setValue('admin@123');
-  }
-
-  teacherSet() {
-    this.selectedRole = 'teacher';
-    this.authForm.get('username')?.setValue('teacher');
-    this.authForm.get('password')?.setValue('teacher@123');
-  }
-
-  studentSet() {
-    this.selectedRole = 'student';
-    this.authForm.get('username')?.setValue('student');
-    this.authForm.get('password')?.setValue('student@123');
-  }
-
-  parentSet() {
-    this.selectedRole = 'parent';
-    this.authForm.get('username')?.setValue('parent');
-    this.authForm.get('password')?.setValue('parent@123');
-  }
-
-  /**
-   * Gets browser and device information for device verification
-   * @returns A string representing the browser and device info
-   */
-  getBrowserInfo(): string {
-    const userAgent = navigator.userAgent;
-    const browserInfo = userAgent.match(
-      /(firefox|msie|chrome|safari)[\s/]([\d.]+)/i
-    );
-    const browserName = browserInfo ? browserInfo[1] : 'unknown';
-    const browserVersion = browserInfo ? browserInfo[2] : 'unknown';
-
-    // Get OS info
-    let osName = 'unknown';
-    if (userAgent.indexOf('Win') !== -1) osName = 'Windows';
-    else if (userAgent.indexOf('Mac') !== -1) osName = 'MacOS';
-    else if (userAgent.indexOf('Linux') !== -1) osName = 'Linux';
-    else if (userAgent.indexOf('Android') !== -1) osName = 'Android';
-    else if (userAgent.indexOf('iOS') !== -1) osName = 'iOS';
-
-    return `${browserName}-${browserVersion}-${osName}`;
   }
   onSubmit() {
     this.submitted = true;
