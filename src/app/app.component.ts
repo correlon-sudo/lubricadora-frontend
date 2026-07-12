@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterModule } from '@angular/router';
 import { Event, Router, NavigationStart, NavigationEnd } from '@angular/router';
 import { PageLoaderComponent } from './layout/page-loader/page-loader.component';
+import { LanguageService } from '@core';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-root',
@@ -14,6 +15,10 @@ import { PageLoaderComponent } from './layout/page-loader/page-loader.component'
 export class AppComponent {
     private cdr = inject(ChangeDetectorRef);
   _router = inject(Router);
+  // Instancia LanguageService en el root para que su constructor fije el
+  // idioma inicial desde localStorage/browser — ya no hay picker de idioma
+  // en el navbar que lo dispare indirectamente.
+  private languageService = inject(LanguageService);
 
   currentUrl!: string;
   constructor() {

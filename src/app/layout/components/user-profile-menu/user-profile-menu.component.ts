@@ -20,18 +20,10 @@ export class UserProfileMenuComponent {
   readonly userImg = input<string>('');
 
   readonly accountClicked = output<void>();
-  readonly inboxClicked = output<void>();
-  readonly settingsClicked = output<void>();
   readonly logoutClicked = output<void>();
 
   onAccountClick() {
     this.accountClicked.emit();
-  }
-  onInboxClick() {
-    this.inboxClicked.emit();
-  }
-  onSettingsClick() {
-    this.settingsClicked.emit();
   }
   onLogoutClick() {
     this.logoutClicked.emit();

@@ -6,7 +6,6 @@ import { ConfigService } from '@config';
 import {
   AuthService,
   InConfiguration,
-  LanguageService,
   RightSidebarService,
   Role,
 } from '@core';
@@ -16,7 +15,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { NotificationListComponent } from '../components/notification-list/notification-list.component';
 import { MatMenuModule } from '@angular/material/menu';
-import { LanguageListComponent } from '../components/language-list/language-list.component';
 import { UserProfileMenuComponent } from '../components/user-profile-menu/user-profile-menu.component';
 import { SearchBarComponent } from '../components/search-bar/search-bar.component';
 
@@ -45,7 +43,6 @@ interface Notifications {
     MatToolbarModule,
     NotificationListComponent,
     MatMenuModule,
-    LanguageListComponent,
     UserProfileMenuComponent,
     SearchBarComponent,
   ],
@@ -62,31 +59,17 @@ export class HeaderComponent
   private configService = inject(ConfigService);
   private authService = inject(AuthService);
   private router = inject(Router);
-  languageService = inject(LanguageService);
   private localStorageService = inject(LocalStorageService);
 
   public config!: InConfiguration;
+  userName?: string;
   userImg?: string;
   homePage?: string;
   isNavbarCollapsed = true;
-  flagvalue: string | string[] | undefined;
-  countryName: string | string[] = [];
-  langStoreValue?: string;
-  defaultFlag?: string;
   isOpenSidebar?: boolean;
   docElement?: HTMLElement;
   isFullScreen = false;
 
-  listLang = [
-    { text: 'English', flag: 'assets/images/flags/us.svg', lang: 'en' },
-    { text: 'Spanish', flag: 'assets/images/flags/spain.svg', lang: 'es' },
-    { text: 'German', flag: 'assets/images/flags/germany.svg', lang: 'de' },
-    { text: 'French', flag: 'assets/images/flags/france.svg', lang: 'fr' },
-    { text: 'Portuguese', flag: 'assets/images/flags/portugal.svg', lang: 'pt' },
-    { text: 'Arabic', flag: 'assets/images/flags/uae.svg', lang: 'ar' },
-    { text: 'Chinese', flag: 'assets/images/flags/china.svg', lang: 'zh' },
-    { text: 'Hindi', flag: 'assets/images/flags/india.svg', lang: 'hi' },
-  ];
   notifications: Notifications[] = [
     {
       message: 'Please check your mail',
@@ -150,29 +133,17 @@ export class HeaderComponent
   ngOnInit() {
     this.config = this.configService.configData;
     const userRole = this.authService.currentUser().roles?.[0]?.name as Role;
+    this.userName = this.authService.currentUser().name;
     this.userImg =
       './assets/images/user/' + this.authService.currentUser().avatar;
     this.docElement = document.documentElement;
 
-    if (userRole === Role.Admin) {
-      this.homePage = 'admin/dashboard/main';
-    } else if (userRole === Role.Encargado) {
-      this.homePage = 'teacher/dashboard';
+    if (userRole === Role.Encargado) {
+      this.homePage = 'admin/reportes';
     } else if (userRole === Role.Vendedor) {
-      this.homePage = 'student/dashboard';
+      this.homePage = 'admin/ventas';
     } else {
       this.homePage = 'admin/dashboard/main';
-    }
-
-    this.langStoreValue = this.localStorageService.get('lang') as string;
-    const val = this.listLang.filter((x) => x.lang === this.langStoreValue);
-    this.countryName = val.map((element) => element.text);
-    if (val.length === 0) {
-      if (this.flagvalue === undefined) {
-        this.defaultFlag = 'assets/images/flags/us.svg';
-      }
-    } else {
-      this.flagvalue = val.map((element) => element.flag);
     }
   }
 
@@ -229,13 +200,6 @@ export class HeaderComponent
     this.isFullScreen = !this.isFullScreen;
   }
 
-  setLanguage(text: string, lang: string, flag: string) {
-    this.countryName = text;
-    this.flagvalue = flag;
-    this.langStoreValue = lang;
-    this.languageService.setLanguage(lang);
-  }
-
   mobileMenuSidebarOpen(event: Event, className: string) {
     const hasClass = (event.target as HTMLInputElement).classList.contains(
       className
@@ -269,23 +233,7 @@ export class HeaderComponent
     });
   }
 
-  onLanguageChange(item: { text: string; flag: string; lang: string }) {
-    this.countryName = item.text;
-    this.flagvalue = item.flag;
-    this.langStoreValue = item.lang;
-    this.languageService.setLanguage(item.lang);
-    this.localStorageService.set('lang', item.lang);
-  }
-
   onAccountClicked() {
     this.router.navigate(['/extra-pages/profile']);
-  }
-
-  onInboxClicked() {
-    this.router.navigate(['/email/inbox']);
-  }
-
-  onSettingsClicked() {
-    this.router.navigate(['/extra-pages/faqs']);
   }
 }

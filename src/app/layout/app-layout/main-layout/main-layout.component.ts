@@ -9,7 +9,6 @@ import { SidebarComponent } from '../../sidebar/sidebar.component';
 import { HeaderComponent } from '../../header/header.component';
 import { UnsubscribeOnDestroyAdapter } from '@shared';
 import { LocalStorageService } from '@shared/services';
-import { AiChatComponent } from '@shared/components/ai-chat/ai-chat.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,7 +21,6 @@ import { AiChatComponent } from '@shared/components/ai-chat/ai-chat.component';
     RightSidebarComponent,
     BidiModule,
     RouterOutlet,
-    AiChatComponent,
   ],
   providers: [RightSidebarService],
 })
