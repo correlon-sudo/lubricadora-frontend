@@ -28,6 +28,7 @@ export interface CreateProducto {
   precioCosto: number;
   precioVenta: number;
   stockMinimo?: number;
+  cantidadInicial?: number;
   ivaAplicable?: boolean;
 }
 

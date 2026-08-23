@@ -85,6 +85,12 @@ export interface ProductoFormDialogData {
             <input matInput type="number" formControlName="stockMinimo" />
           </mat-form-field>
         </div>
+        @if (!data.producto) {
+          <mat-form-field class="col-4" appearance="outline">
+            <mat-label>Stock inicial</mat-label>
+            <input matInput type="number" formControlName="cantidadInicial" />
+          </mat-form-field>
+        }
         <mat-checkbox formControlName="ivaAplicable">Aplica IVA</mat-checkbox>
       </mat-dialog-content>
       <mat-dialog-actions align="end">
@@ -117,11 +123,18 @@ export class ProductoFormDialogComponent {
     precioCosto: [this.data.producto?.precioCosto ?? 0, [Validators.required, Validators.min(0)]],
     precioVenta: [this.data.producto?.precioVenta ?? 0, [Validators.required, Validators.min(0)]],
     stockMinimo: [this.data.producto?.stockMinimo ?? 0, [Validators.min(0)]],
+    cantidadInicial: [0, [Validators.min(0)]],
     ivaAplicable: [this.data.producto?.ivaAplicable ?? true],
   });
 
   onSubmit() {
     if (this.form.invalid) return;
-    this.dialogRef.close(this.form.getRawValue());
+    const value = this.form.getRawValue();
+    if (this.data.producto) {
+      const { cantidadInicial: _cantidadInicial, ...sinCantidadInicial } = value;
+      this.dialogRef.close(sinCantidadInicial);
+      return;
+    }
+    this.dialogRef.close(value);
   }
 }

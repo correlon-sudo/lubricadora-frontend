@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -19,6 +20,7 @@ import { ServiciosService } from './servicios/servicios.service';
 import { ClientesService } from '../clientes/clientes.service';
 import { VehiculosService } from '../vehiculos/vehiculos.service';
 import { ConfiguracionService } from '../configuracion/configuracion.service';
+import { CajaService } from '../caja/caja.service';
 import { VentasService } from './ventas.service';
 import { CotizacionesService } from './cotizaciones/cotizaciones.service';
 import { Producto } from '../inventario/productos/producto.model';
@@ -54,6 +56,7 @@ function round2(value: number): number {
   standalone: true,
   imports: [
     FormsModule,
+    RouterLink,
     BreadcrumbComponent,
     MatButtonModule,
     MatFormFieldModule,
@@ -69,6 +72,7 @@ export class VentasComponent implements OnInit {
   private clientesService = inject(ClientesService);
   private vehiculosService = inject(VehiculosService);
   private configuracionService = inject(ConfiguracionService);
+  private cajaService = inject(CajaService);
   private ventasService = inject(VentasService);
   private cotizacionesService = inject(CotizacionesService);
   private snackBar = inject(MatSnackBar);
@@ -100,6 +104,7 @@ export class VentasComponent implements OnInit {
   isSubmitting = false;
   ultimaVentaId: string | null = null;
   ultimaCotizacionId: string | null = null;
+  cajaAbierta = signal<boolean | null>(null);
 
   resultadosBusqueda = computed(() => {
     const termino = this.busqueda().trim().toLowerCase();
@@ -168,9 +173,9 @@ export class VentasComponent implements OnInit {
     round2(this.pagos().reduce((s, p) => s + (p.monto || 0), 0)),
   );
 
-  pagosCuadran = computed(
-    () => Math.abs(this.sumaPagos() - this.totales().total) < 0.01,
-  );
+  pagosAlcanzan = computed(() => this.sumaPagos() >= this.totales().total - 0.01);
+
+  vuelto = computed(() => round2(Math.max(0, this.sumaPagos() - this.totales().total)));
 
   ngOnInit() {
     this.productosService.findAll().subscribe((productos) => this.productos.set(productos));
@@ -184,6 +189,11 @@ export class VentasComponent implements OnInit {
       this.clientes.set(clientes);
       const consumidorFinal = clientes.find((c) => c.esConsumidorFinal);
       if (consumidorFinal) this.clienteId.set(consumidorFinal.id);
+    });
+
+    this.cajaService.actual().subscribe({
+      next: () => this.cajaAbierta.set(true),
+      error: () => this.cajaAbierta.set(false),
     });
   }
 
@@ -270,8 +280,13 @@ export class VentasComponent implements OnInit {
       return;
     }
 
-    if (!this.pagosCuadran()) {
-      this.notify('La suma de pagos no coincide con el total', true);
+    if (!this.pagosAlcanzan()) {
+      this.notify('El pago no cubre el total', true);
+      return;
+    }
+
+    if (this.cajaAbierta() === false) {
+      this.notify('No hay caja abierta. Abrí caja antes de vender.', true);
       return;
     }
 

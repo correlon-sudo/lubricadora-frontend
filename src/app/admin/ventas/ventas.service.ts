@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { ApiEnvelope } from '@core/models/api-envelope';
@@ -10,9 +10,12 @@ export class VentasService {
   private http = inject(HttpClient);
   private baseUrl = `${environment.apiUrl}/ventas`;
 
-  findAll() {
+  findAll(desde?: string, hasta?: string) {
+    let params = new HttpParams();
+    if (desde) params = params.set('desde', desde);
+    if (hasta) params = params.set('hasta', hasta);
     return this.http
-      .get<ApiEnvelope<Venta[]>>(this.baseUrl)
+      .get<ApiEnvelope<Venta[]>>(this.baseUrl, { params })
       .pipe(map((res) => res.data));
   }
 

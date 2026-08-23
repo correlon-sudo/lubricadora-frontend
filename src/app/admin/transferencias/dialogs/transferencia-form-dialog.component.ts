@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
 import { Producto } from '../../inventario/productos/producto.model';
 import { Sucursal } from '../../sucursales/sucursal.model';
@@ -27,6 +28,7 @@ export interface TransferenciaFormDialogData {
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatAutocompleteModule,
     MatIconModule,
   ],
   template: `
@@ -52,14 +54,21 @@ export interface TransferenciaFormDialogData {
           <div class="col-6">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Producto</mat-label>
-              <mat-select
-                [ngModel]="linea.productoId"
-                (ngModelChange)="actualizarLinea($index, 'productoId', $event)"
+              <input
+                matInput
+                [ngModel]="busquedas()[$index]"
+                (ngModelChange)="onBusquedaChange($index, $event)"
+                [matAutocomplete]="auto"
+                placeholder="Buscar por código o nombre…"
+              />
+              <mat-autocomplete
+                #auto="matAutocomplete"
+                (optionSelected)="onProductoSeleccionado($index, $event)"
               >
-                @for (p of data.productos; track p.id) {
+                @for (p of productosFiltrados(busquedas()[$index]); track p.id) {
                   <mat-option [value]="p.id">{{ p.codigo }} — {{ p.nombre }}</mat-option>
                 }
-              </mat-select>
+              </mat-autocomplete>
             </mat-form-field>
           </div>
           <div class="col-4">
@@ -109,6 +118,7 @@ export class TransferenciaFormDialogComponent {
   sucursalDestinoId = signal(this.sucursalesDestino[0]?.id ?? '');
   observacion = signal('');
   items = signal<CreateTransferenciaItem[]>([{ productoId: '', cantidad: 1 }]);
+  busquedas = signal<string[]>(['']);
 
   esValido(): boolean {
     return (
@@ -118,12 +128,36 @@ export class TransferenciaFormDialogComponent {
     );
   }
 
+  productosFiltrados(termino: string): Producto[] {
+    const t = termino.trim().toLowerCase();
+    if (!t) return this.data.productos;
+    return this.data.productos.filter(
+      (p) => p.nombre.toLowerCase().includes(t) || p.codigo.toLowerCase().includes(t),
+    );
+  }
+
+  onBusquedaChange(index: number, valor: string) {
+    this.busquedas.update((b) => b.map((v, i) => (i === index ? valor : v)));
+    this.actualizarLinea(index, 'productoId', '');
+  }
+
+  onProductoSeleccionado(index: number, event: MatAutocompleteSelectedEvent) {
+    const productoId = event.option.value as string;
+    const producto = this.data.productos.find((p) => p.id === productoId);
+    this.actualizarLinea(index, 'productoId', productoId);
+    this.busquedas.update((b) =>
+      b.map((v, i) => (i === index ? `${producto?.codigo} — ${producto?.nombre}` : v)),
+    );
+  }
+
   agregarLinea() {
     this.items.update((lineas) => [...lineas, { productoId: '', cantidad: 1 }]);
+    this.busquedas.update((b) => [...b, '']);
   }
 
   quitarLinea(index: number) {
     this.items.update((lineas) => lineas.filter((_, i) => i !== index));
+    this.busquedas.update((b) => b.filter((_, i) => i !== index));
   }
 
   actualizarLinea(index: number, campo: keyof CreateTransferenciaItem, valor: string | number) {

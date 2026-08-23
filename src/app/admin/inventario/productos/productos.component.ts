@@ -82,18 +82,8 @@ export class ProductosComponent implements OnInit {
   columnDefinitions: ColumnDefinition[] = [
     { def: 'codigo', label: 'Código', type: 'text' },
     { def: 'nombre', label: 'Nombre', type: 'text' },
+    { def: 'stockTotal', label: 'Stock', type: 'number' },
     { def: 'marcaNombre', label: 'Marca', type: 'text' },
-    { def: 'categoriaNombre', label: 'Categoría', type: 'text' },
-    { def: 'precioVenta', label: 'Precio venta', type: 'number' },
-    {
-      def: 'stockLabel',
-      label: 'Stock',
-      type: 'status',
-      statusBadgeMap: {
-        Bajo: 'badge badge-solid-red',
-        OK: 'badge badge-solid-green',
-      },
-    },
     { def: 'actions', label: 'Acciones', type: 'actionBtn' },
   ];
 

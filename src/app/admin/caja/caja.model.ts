@@ -41,6 +41,7 @@ export interface ReporteDiario extends Caja {
   ventas: {
     numero: string;
     total: number;
+    vuelto: number;
     estado: string;
     pagos: { formaPago: string; monto: number }[];
   }[];

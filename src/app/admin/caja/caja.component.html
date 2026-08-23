@@ -37,8 +37,59 @@
             </p>
             <p>Monto inicial: &#36;{{ cajaActual.montoInicial.toFixed(2) }}</p>
 
+            @if (reporte) {
+              <div class="d-flex justify-content-between">
+                <span>Ventas acumuladas</span>
+                <strong>&#36;{{ totalVentasEnVivo.toFixed(2) }}</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-3">
+                <span>Efectivo en caja (estimado)</span>
+                <strong>&#36;{{ totalEfectivoEnVivo.toFixed(2) }}</strong>
+              </div>
+
+              <h6>Ventas de hoy ({{ reporte.ventas.length }})</h6>
+              <table class="table table-sm">
+                <thead>
+                  <tr>
+                    <th>Número</th>
+                    <th>Estado</th>
+                    <th class="text-end">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (v of reporte.ventas; track v.numero) {
+                    <tr>
+                      <td>{{ v.numero }}</td>
+                      <td>{{ v.estado }}</td>
+                      <td class="text-end">&#36;{{ v.total.toFixed(2) }}</td>
+                    </tr>
+                  } @empty {
+                    <tr><td colspan="3" class="text-center text-muted">Sin ventas todavía.</td></tr>
+                  }
+                </tbody>
+              </table>
+
+              @if (reporte.movimientos.length > 0) {
+                <h6>Movimientos manuales</h6>
+                <table class="table table-sm">
+                  <tbody>
+                    @for (m of reporte.movimientos; track m.fecha) {
+                      <tr>
+                        <td>{{ m.tipo }}</td>
+                        <td>{{ m.concepto }}</td>
+                        <td class="text-end">&#36;{{ m.monto.toFixed(2) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              }
+            }
+
             <button mat-stroked-button (click)="onNuevoMovimiento()">
               + Movimiento manual
+            </button>
+            <button mat-stroked-button class="ms-2" (click)="onVerPdfActual()">
+              Ver PDF
             </button>
             <button mat-flat-button color="warn" class="ms-2" (click)="onCerrar()">
               Cerrar caja

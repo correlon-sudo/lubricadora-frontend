@@ -8,6 +8,13 @@
       ></app-breadcrumb>
     </div>
 
+    @if (cajaAbierta() === false) {
+      <div class="alert alert-warning d-flex justify-content-between align-items-center">
+        <span>No hay caja abierta en tu sucursal. Abrí caja antes de vender.</span>
+        <a class="btn btn-sm btn-warning" routerLink="/admin/caja">Abrir caja</a>
+      </div>
+    }
+
     <div class="row">
       <!-- Columna izquierda: búsqueda + carrito -->
       <div class="col-lg-8">
@@ -221,19 +228,24 @@
               + Agregar pago
             </button>
 
-            <div class="mt-2" [class.text-danger]="!pagosCuadran()">
+            <div class="mt-2" [class.text-danger]="!pagosAlcanzan()">
               Pagado: &#36;{{ sumaPagos().toFixed(2) }}
-              @if (!pagosCuadran()) {
-                (no coincide con el total)
+              @if (!pagosAlcanzan()) {
+                (no cubre el total)
               }
             </div>
+            @if (vuelto() > 0) {
+              <div class="mt-1">
+                <strong>Vuelto: &#36;{{ vuelto().toFixed(2) }}</strong>
+              </div>
+            }
           }
 
           <button
             mat-flat-button
             color="primary"
             class="w-100 mt-3"
-            [disabled]="isSubmitting || cart().length === 0"
+            [disabled]="isSubmitting || cart().length === 0 || (modo() === 'VENTA' && cajaAbierta() === false)"
             (click)="confirmar()"
           >
             {{ modo() === 'VENTA' ? 'Confirmar venta' : 'Guardar cotización' }}

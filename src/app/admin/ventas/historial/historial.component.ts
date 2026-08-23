@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { DatePipe, DecimalPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,11 +9,22 @@ import { ConfirmDialogComponent } from '@shared';
 import { VentasService } from '../ventas.service';
 import { Venta } from '../venta.model';
 
+function fechaISO(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function hoyISO(): string {
+  return fechaISO(new Date());
+}
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-historial-ventas',
   standalone: true,
-  imports: [BreadcrumbComponent, MatButtonModule, DatePipe, DecimalPipe],
+  imports: [BreadcrumbComponent, MatButtonModule, FormsModule, DatePipe, DecimalPipe],
   template: `
     <section class="content">
       <div class="content-block">
@@ -26,6 +38,21 @@ import { Venta } from '../venta.model';
         <div class="row">
           <div class="col-lg-12">
             <div class="modern-card body">
+              <div class="d-flex align-items-center gap-2 mb-3">
+                <button mat-stroked-button type="button" (click)="onDiaAnterior()">
+                  &laquo; Día anterior
+                </button>
+                <input
+                  type="date"
+                  class="form-control"
+                  style="max-width: 180px"
+                  [ngModel]="fecha"
+                  (ngModelChange)="onFechaChange($event)"
+                />
+                <button mat-stroked-button type="button" (click)="onDiaSiguiente()">
+                  Día siguiente &raquo;
+                </button>
+              </div>
               <table class="table">
                 <thead>
                   <tr>
@@ -79,19 +106,37 @@ export class HistorialVentasComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   ventas: Venta[] = [];
+  fecha = hoyISO();
 
   ngOnInit() {
     this.loadData();
   }
 
   loadData() {
-    this.ventasService.findAll().subscribe({
+    this.ventasService.findAll(this.fecha, this.fecha).subscribe({
       next: (ventas) => {
         this.ventas = ventas;
         this.cdr.markForCheck();
       },
       error: (err) => this.notify(err?.error?.message ?? 'Error al cargar ventas', true),
     });
+  }
+
+  onFechaChange(fecha: string) {
+    this.fecha = fecha;
+    this.loadData();
+  }
+
+  onDiaAnterior() {
+    const d = new Date(`${this.fecha}T00:00:00`);
+    d.setDate(d.getDate() - 1);
+    this.onFechaChange(fechaISO(d));
+  }
+
+  onDiaSiguiente() {
+    const d = new Date(`${this.fecha}T00:00:00`);
+    d.setDate(d.getDate() + 1);
+    this.onFechaChange(fechaISO(d));
   }
 
   onAnular(v: Venta) {

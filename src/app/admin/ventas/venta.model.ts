@@ -50,6 +50,7 @@ export interface Venta {
   descuentoTotal: number;
   iva: number;
   total: number;
+  vuelto: number;
   estado: EstadoVenta;
   fecha: string;
   detalles: VentaDetalle[];

@@ -8,7 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BreadcrumbComponent } from '@shared/components/breadcrumb/breadcrumb.component';
 import { CajaService } from './caja.service';
-import { Caja } from './caja.model';
+import { Caja, ReporteDiario } from './caja.model';
 import { CerrarCajaDialogComponent } from './dialogs/cerrar-caja-dialog.component';
 import { MovimientoCajaDialogComponent } from './dialogs/movimiento-caja-dialog.component';
 
@@ -34,6 +34,7 @@ export class CajaComponent implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
   cajaActual: Caja | null = null;
+  reporte: ReporteDiario | null = null;
   historial: Caja[] = [];
   isLoading = true;
 
@@ -53,13 +54,40 @@ export class CajaComponent implements OnInit {
         this.cajaActual = caja;
         this.isLoading = false;
         this.cdr.markForCheck();
+        this.cajaService.reporteDiario(caja.id).subscribe((reporte) => {
+          this.reporte = reporte;
+          this.cdr.markForCheck();
+        });
       },
       error: () => {
         this.cajaActual = null;
+        this.reporte = null;
         this.isLoading = false;
         this.cdr.markForCheck();
       },
     });
+  }
+
+  get totalEfectivoEnVivo(): number {
+    if (!this.reporte) return 0;
+    let total = 0;
+    for (const v of this.reporte.ventas) {
+      for (const p of v.pagos) {
+        if (p.formaPago === 'EFECTIVO') total += p.monto;
+      }
+      total -= v.vuelto;
+    }
+    const ingresos = this.reporte.movimientos
+      .filter((m) => m.tipo === 'INGRESO')
+      .reduce((s, m) => s + m.monto, 0);
+    const egresos = this.reporte.movimientos
+      .filter((m) => m.tipo === 'EGRESO')
+      .reduce((s, m) => s + m.monto, 0);
+    return this.reporte.montoInicial + total + ingresos - egresos;
+  }
+
+  get totalVentasEnVivo(): number {
+    return this.reporte?.ventas.reduce((s, v) => s + v.total, 0) ?? 0;
   }
 
   loadHistorial() {
@@ -126,6 +154,11 @@ export class CajaComponent implements OnInit {
       next: (blob) => window.open(URL.createObjectURL(blob), '_blank'),
       error: () => this.notify('Error al generar el PDF', true),
     });
+  }
+
+  onVerPdfActual() {
+    if (!this.cajaActual) return;
+    this.onVerPdf(this.cajaActual);
   }
 
   private notify(message: string, isError = false) {

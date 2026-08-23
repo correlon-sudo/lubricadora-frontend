@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
+import { CajaService } from '../../../caja/caja.service';
 import { FormaPago, TipoComprobante } from '../../venta.model';
 import { Cotizacion } from '../cotizacion.model';
 
@@ -45,6 +46,12 @@ interface PagoLinea {
       </mat-form-field>
 
       <p>Total a pagar: <strong>&#36;{{ data.cotizacion.total.toFixed(2) }}</strong></p>
+
+      @if (cajaAbierta() === false) {
+        <div class="alert alert-warning">
+          No hay caja abierta — no se puede convertir hasta abrir caja.
+        </div>
+      }
 
       @for (pago of pagos(); track $index) {
         <div class="row mb-2">
@@ -86,16 +93,24 @@ interface PagoLinea {
         + Agregar pago
       </button>
 
-      <div class="mt-2" [class.text-danger]="!pagosCuadran()">
+      <div class="mt-2" [class.text-danger]="!pagosAlcanzan()">
         Pagado: &#36;{{ sumaPagos().toFixed(2) }}
+        @if (!pagosAlcanzan()) {
+          (no cubre el total)
+        }
       </div>
+      @if (vuelto() > 0) {
+        <div class="mt-1">
+          <strong>Vuelto: &#36;{{ vuelto().toFixed(2) }}</strong>
+        </div>
+      }
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button [mat-dialog-close]="null">Cancelar</button>
       <button
         mat-flat-button
         color="primary"
-        [disabled]="!pagosCuadran()"
+        [disabled]="!pagosAlcanzan() || cajaAbierta() === false"
         (click)="onConfirmar()"
       >
         Confirmar
@@ -106,6 +121,7 @@ interface PagoLinea {
 export class ConvertirDialogComponent {
   data = inject<ConvertirDialogData>(MAT_DIALOG_DATA);
   dialogRef = inject(MatDialogRef<ConvertirDialogComponent>);
+  private cajaService = inject(CajaService);
 
   tiposComprobante: TipoComprobante[] = [
     'NOTA_VENTA',
@@ -119,14 +135,24 @@ export class ConvertirDialogComponent {
   pagos = signal<PagoLinea[]>([
     { formaPago: 'EFECTIVO', monto: this.data.cotizacion.total, referencia: '' },
   ]);
+  cajaAbierta = signal<boolean | null>(null);
 
-  sumaPagos() {
-    return Math.round(this.pagos().reduce((s, p) => s + (p.monto || 0), 0) * 100) / 100;
+  constructor() {
+    this.cajaService.actual().subscribe({
+      next: () => this.cajaAbierta.set(true),
+      error: () => this.cajaAbierta.set(false),
+    });
   }
 
-  pagosCuadran() {
-    return Math.abs(this.sumaPagos() - this.data.cotizacion.total) < 0.01;
-  }
+  sumaPagos = computed(() =>
+    Math.round(this.pagos().reduce((s, p) => s + (p.monto || 0), 0) * 100) / 100,
+  );
+
+  pagosAlcanzan = computed(() => this.sumaPagos() >= this.data.cotizacion.total - 0.01);
+
+  vuelto = computed(() =>
+    Math.round(Math.max(0, this.sumaPagos() - this.data.cotizacion.total) * 100) / 100,
+  );
 
   agregarPago() {
     this.pagos.update((p) => [...p, { formaPago: 'EFECTIVO', monto: 0, referencia: '' }]);
